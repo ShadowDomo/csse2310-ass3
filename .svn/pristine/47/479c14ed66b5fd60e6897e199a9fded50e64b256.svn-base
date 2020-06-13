@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/push2310.dir/push2310.c.o CMakeFiles/push2310.dir/2310A.c.o  -o push2310 

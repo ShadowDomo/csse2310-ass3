@@ -1,0 +1,44 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "path.h"
+
+typedef struct Cards {
+    // how many the player has collected
+    int A;
+    int B;
+    int C;
+    int D;
+    int E;
+} Cards;
+
+
+typedef struct Player {
+    // how much money the player has
+    int money;
+
+    // the player ID
+    int ID;
+
+    // which site the player is at
+    int siteNumber;
+
+    // how many times the player has visited the sites
+    int countV1;
+    int countV2;
+
+    // the player's points
+    int points;
+
+    Cards cards;
+
+} Player;
+
+Player *init_player(Path *path, int ID);
+void move_player(Path *path, Player *player, int steps);
+
+#endif

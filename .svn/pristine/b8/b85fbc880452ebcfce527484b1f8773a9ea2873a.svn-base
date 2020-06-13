@@ -1,0 +1,26 @@
+#include "util.h"
+
+/** Reads a line from given file.
+ *
+ * @param file File to read from
+ * @return returns the string which the file read
+ */
+char *read_line(FILE *file) {
+    char *result = malloc(sizeof(char) * 1);
+    int position = 0;
+    int next = 0;
+    int len = 0;
+    while (true) {
+        next = fgetc(file);
+        if (next == EOF || next == '\n') {
+            result[position] = '\0';
+            return result;
+        } else {
+            len += 1;
+            result = realloc(result, (len + 1) * sizeof(char));
+            result[position++] = (char) next;
+        }
+    }
+}
+
+

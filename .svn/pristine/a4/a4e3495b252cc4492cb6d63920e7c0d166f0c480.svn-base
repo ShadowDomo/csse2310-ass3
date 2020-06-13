@@ -1,0 +1,23 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+typedef struct Player {
+    // how much money the player has
+    int money;
+
+    // the player ID
+    int ID;
+
+    // which site the player is at
+    int siteNumber;
+
+
+
+} Player;
+
+#endif

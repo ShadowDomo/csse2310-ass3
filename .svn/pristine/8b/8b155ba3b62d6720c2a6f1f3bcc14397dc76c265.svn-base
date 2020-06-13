@@ -1,0 +1,48 @@
+#include "util.h"
+
+/** Reads a line from given file.
+ *
+ * @param file File to read from
+ * @return returns the string which the file read
+ */
+char *read_line(FILE *file) {
+    char *result = malloc(sizeof(char) * 1);
+    int position = 0;
+    int next = 0;
+    int len = 0;
+    while (true) {
+        next = fgetc(file);
+        if (next == EOF || next == '\n') {
+            result[position] = '\0';
+            return result;
+        } else {
+            len += 1;
+            result = realloc(result, (len + 1) * sizeof(char));
+            result[position++] = (char) next;
+        }
+    }
+}
+
+/** qsort() comparator function which sorts array on the player ID. **/
+//int sorter_func(const void *p1, const void *p2) {
+//    Player *pp1 = (Player*)p1;
+//    Player *pp2 = (Player*)p2;
+//    return pp1->ID - pp2->ID;
+//
+//}
+
+/** Creates lines with given size. **/
+char **make_empty_strings(int numLines, int width) {
+    char **lines = malloc(sizeof(char*) * numLines);
+    for (int i = 0; i < numLines; ++i) {
+        lines[i] = malloc(sizeof(char) * 3 * width + 1);
+
+        // we use 3 * width because each site is 3 characters
+        for (int j = 0; j < 3 * width; ++j) {
+            lines[i][j] = ' ';
+        }
+        lines[i][3 * width] = 0;
+    }
+
+    return lines;
+}

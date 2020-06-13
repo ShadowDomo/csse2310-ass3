@@ -1,0 +1,20 @@
+#include "player.h"
+
+/** Initialises a player **/
+void initPlayer(Player *player, int ID) {
+    player->ID = ID;
+    player->money = 7;
+    player->countV1 = 0;
+    player->countV2 = 0;
+    player->siteNumber = 0;
+    player->points = 0;
+
+    // init cards
+    Cards cards = {0, 0, 0, 0, 0};
+    player->cards = cards;
+}
+
+
+void movePlayer(Player *player, int steps) {
+    player->siteNumber += steps;
+}

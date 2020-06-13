@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/2310A.dir/2310A.c.o CMakeFiles/2310A.dir/path.c.o CMakeFiles/2310A.dir/util.c.o CMakeFiles/2310A.dir/player.c.o  -o 2310A 

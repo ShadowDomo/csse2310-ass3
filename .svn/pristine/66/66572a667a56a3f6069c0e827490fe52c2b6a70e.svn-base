@@ -1,0 +1,886 @@
+#include "path.h"
+
+
+/** Checks the player's args. **/
+int check_player_args(int argc, char **argv) {
+    if (argc != 3) {
+        player_exit(INVALID_NUM_ARGS_PLAYER);
+    }
+
+    char *trash;
+
+    char *validIDs = "0123456789";
+
+    // check number of sites is more than 2
+    int playerCount = (int) strtol(argv[1], &trash, 10);
+    int playerID = (int) strtol(argv[2], &trash, 10);
+
+    if (strstr(validIDs, argv[2]) == NULL || strlen(argv[2]) == 0) {
+        player_exit(INVALID_ID);
+    }
+
+    if (playerCount < 1) {
+        player_exit(INVALID_PLAYER_COUNT);
+    }
+    if (playerID < 0 || playerID >= playerCount) {
+        player_exit(INVALID_ID);
+    }
+
+    return 0;
+}
+
+/** Allocates the path from the given string **/
+Path *allocate_path(char *line, int numPlayers) {
+    Path *path = malloc(sizeof(Path));
+
+    // get number of stops
+    // following is to find how many stops we have
+    char temp[] = ";";
+    char *trash;
+    int i = (int) strcspn(line, temp);
+
+    char numOfSites[5];
+    snprintf(numOfSites, i + 1, "%s", &line[0]);
+
+    int numberOfStops = (int) strtol(numOfSites, &trash, 10);
+    path->size = numberOfStops;
+
+    // make a list of sites with length of the number of stops
+    Site *sites = malloc(sizeof(Site) * path->size);
+
+    for (int siteNum = 0; siteNum < numberOfStops; ++siteNum) {
+        // break up into each site
+
+        // already checked first few chars
+        char string[4];
+        snprintf(string, 4, "%s", &line[strlen(numOfSites) + 1 + 3 * siteNum]);
+
+        // get site type and its value
+
+        // 4th is a number
+        char    type[3];
+        snprintf(type, 3, "%s", string);
+        sites[siteNum].type = strdup(type);
+
+        if (strcmp(sites[siteNum].type, "::") == 0) {
+            sites[siteNum].playerLimit = numPlayers;
+        } else {
+            sites[siteNum].playerLimit = string[2] - '0';
+        }
+    }
+
+    path->sites = sites;
+    path->playersInGame = 0;
+    return path;
+}
+
+/** Prints the player details to stdout. **/
+void print_player_details(Path *path, int playerID, FILE *location) {
+//    Cards cards;
+    Player *player = path->players[playerID];
+    fprintf(location, "Player %d Money=%d V1=%d V2=%d Points=%d A=%d B=%d C=%d "
+           "D=%d E=%d\n", playerID, player->money, player->countV1,
+           player->countV2, player->points, player->cards[A], player->cards[B],
+           player->cards[C], player->cards[D], player->cards[E]);
+    print_path(path, location);
+}
+
+/** Checks if the map file is valid. **/
+int check_map_file(char *line, ProcessType processType) {
+    // get number of stops
+    char temp[] = ";";
+    char *trash;
+    int i = (int) strcspn(line, temp);
+
+    char numOfSites[5];
+    snprintf(numOfSites, i + 1, "%s", &line[0]);
+
+    // check number of sites is more than 2
+    int numberOfStops = (int) strtol(numOfSites, &trash, 10);
+    if (numberOfStops < 2) {
+        if (processType == DEALER) {
+            dealer_exit(INVALID_PATH_FILE);
+        }
+        player_exit(PATH_ERROR);
+    }
+
+    // check file length is correct
+    if (strlen(line) != 3 * numberOfStops + 1 + strlen(numOfSites)) {
+        if (processType == DEALER) {
+            dealer_exit(INVALID_PATH_FILE);
+        }
+        player_exit(PATH_ERROR);
+    }
+
+    char *validTypes = "Mo V1 V2 Do Ri ::";
+    char *validCapacity = "123456789";
+    // check each site
+    for (int siteNum = 0; siteNum < numberOfStops; ++siteNum) {
+        // get entire site
+        char site[4];
+        snprintf(site, 4, "%s", &line[strlen(numOfSites) + 1 + 3 * siteNum]);
+
+        // get site characters
+        char type[3];
+        snprintf(type, 3, "%s", site);
+
+        // if not valid type
+        if (strstr(validTypes, type) == NULL) {
+            if (processType == DEALER) {
+                dealer_exit(INVALID_PATH_FILE);
+            }
+            player_exit(PATH_ERROR);
+        }
+
+        // checking capacities
+        // if barrier
+        if (strcmp(type, "::") == 0) {
+            // needs to be -
+            char dash[2];
+            snprintf(dash, 2, "%s", &site[2]);
+
+            if (strcmp(dash, "-") != 0) {
+                if (processType == DEALER) {
+                    dealer_exit(INVALID_PATH_FILE);
+                }
+                player_exit(PATH_ERROR);
+            }
+        } else {
+            // is normal site
+
+            char str[2] = "\0";
+            str[0] = site[2];
+            if (strstr(validCapacity, str) == NULL) {
+                if (processType == DEALER) {
+                    dealer_exit(INVALID_PATH_FILE);
+                }
+                player_exit(PATH_ERROR);
+            }
+        }
+
+        // first and last site need to be barriers
+        if (siteNum == 0 || siteNum == numberOfStops - 1) {
+            if (strcmp(type, "::") != 0) {
+                if (processType == DEALER) {
+                    dealer_exit(INVALID_PATH_FILE);
+                }
+                player_exit(PATH_ERROR);
+            }
+        }
+    }
+
+    return NO_ERROR;
+}
+
+/** Checks the dealer response an acts accordingly. **/
+int check_input(char *line, Path *path, int playerID, char playerType) {
+    if (strcmp(line, "YT") == 0) {
+        int move = 0;
+        if (playerType == 'A') {
+            move = player_A_next_move(path, playerID);
+        } else if (playerType == 'B') {
+            move = player_B_next_move(path, playerID);
+        }
+
+        fprintf(stdout, "DO%d\n", path->players[playerID]->siteNumber + move);
+        fflush(stdout);
+
+        return 0;
+    }
+
+    if (strcmp(line, "EARLY") == 0) {
+        player_exit(EARLY_GAME_OVER);
+        return 0;
+    }
+
+    if (strcmp(line, "DONE") == 0) {
+        game_over(path, stderr);
+        player_exit(NO_ERROR_PLAYER);
+        return 0;
+    }
+
+    // need to check first 3 characters
+    char read[4];
+    snprintf(read, 4, "%s", &line[0]);
+
+    if (strcmp(strdup(read), "HAP") == 0) {
+        char *ptr;
+
+        char *validIDs = "0123456789";
+        // get the playerID
+        char subString[5];
+        snprintf(subString, 2, "%s", &line[3]);
+
+        if (strstr(validIDs, subString) == NULL) {
+            player_exit(PLAYER_COMMUNICATION_ERROR);
+        }
+        int newMovePlayerID = (int) strtol(subString, &ptr, 10);
+        if (newMovePlayerID > path->playersInGame - 1) {
+            player_exit(PLAYER_COMMUNICATION_ERROR);
+        }
+
+        // get the site number
+        snprintf(subString, 5, "%s", &line[5]);
+        int newMoveSiteID = (int) strtol(subString, &ptr, 10);
+
+        // we need to pad the hardcoded positions because the site may be > 9
+        int padding = count_chars(newMoveSiteID) - 1;
+
+        // get additional points for player
+        snprintf(subString, 5, "%s", &line[7 + padding]);
+        int newMovePoints = (int) strtol(subString, &ptr, 10);
+
+        padding += count_chars(newMovePoints) - 1;
+        // get change in money for player
+        snprintf(subString, 5, "%s", &line[9 + padding]);
+        int newMoveMoney = (int) strtol(subString, &ptr, 10);
+
+        padding += count_chars(newMoveMoney) - 1;
+
+        // get the card drawn by player.
+        snprintf(subString, 2, "%s", &line[11 + padding]);
+        int newMoveCardDrawn = (int) strtol(subString, &ptr, 10);
+
+        Player *player = path->players[newMovePlayerID];
+        int steps = newMoveSiteID - player->siteNumber;
+        move_player(path, newMovePlayerID, steps, PLAYER);
+        Site *site = &path->sites[player->siteNumber];
+
+        // do V1 type
+        if (strcmp(site->type, V1) == 0) {
+            player->countV1 += 1;
+        }
+        // do V2 type
+        if (strcmp(site->type, V2) == 0) {
+            player->countV2 += 1;
+        }
+
+        player->points += newMovePoints;
+        player->money += newMoveMoney;
+
+        // add card to cards
+        if (newMoveCardDrawn > 0) {
+            // spec isn't zero-based
+            player->cards[newMoveCardDrawn - 1] += 1;
+        }
+
+        print_player_details(path, newMovePlayerID, stderr);
+
+        return 0;
+    }
+
+    return 1;
+}
+
+/** Signal handler for SIGABRT. **/
+void sig_handler(int signal) {
+    if (signal == SIGABRT) {
+        return;
+    }
+}
+
+
+
+/** Starts player . **/
+void start_player(int numPlayers, int ID, Path *path, char playerType){
+    print_path(path, stderr);
+    fflush(stderr);
+    while (true) {
+        // wait for dealer input
+        char *input = read_line(stdin);
+        if (strcmp(input, "\a") == 0) {
+            player_exit(PLAYER_COMMUNICATION_ERROR);
+        }
+        if (check_input(input, path, ID, playerType)) {
+            player_exit(PLAYER_COMMUNICATION_ERROR);
+        }
+    }
+
+}
+
+/** Display each player's score to stdout. **/
+void game_over(Path *path, FILE *location) {
+    int numPlayers = path->playersInGame;
+    fprintf(location,"Scores: ");
+    for (int playerID = 0; playerID < numPlayers; ++playerID) {
+        int score = calculate_total_score(path->players[playerID]);
+
+        if (playerID == numPlayers - 1) {
+            fprintf(location,"%d\n", score);
+        } else {
+            fprintf(location,"%d,", score);
+        }
+    }
+}
+
+/** Returns 0 if the game is over. **/
+int check_game_over(Path *path) {
+    if (path->sites[path->size - 1].numPlayersCurrently == path->playersInGame) {
+        return 0;
+    }
+
+    return 1;
+}
+
+
+/** Returns the index of the next barrier. **/
+int find_next_barrier(Path *path, int currentSiteID) {
+    for (int siteID = currentSiteID + 1; siteID < path->size; ++siteID) {
+        if (strcmp(path->sites[siteID].type, Barrier) == 0) {
+            return siteID;
+        }
+    }
+
+    // if we get here then there are no more barriers, eg we are at end
+    return currentSiteID;
+}
+
+/** Returns 0 if all other players are on later sites. **/
+int check_if_last_player(Path *path, Player *player) {
+    // checks from left to right if player is at smallest site
+    Site *sites = path->sites;
+    for (int siteID = 0; siteID < path->size; ++siteID) {
+        // if player is at site
+
+        if (sites[siteID].numPlayersCurrently != 0) {
+            if (player->siteNumber == siteID) {
+                if (player->position == 1) {
+                    return 0;
+                }
+                return 1;
+
+            }
+            return 1;
+        }
+    }
+//    return 1;
+}
+
+/** Check if the specified site exists before the next barrier.
+ *  Returns -1 if doesnt exist, or returns number of steps if it exists. **/
+int check_before_barrier(Path *path, Player *player, char *siteType) {
+    int nextBarrierID = find_next_barrier(path, player->siteNumber);
+    Site *sites = path->sites;
+
+    for (int siteID = player->siteNumber + 1; siteID < nextBarrierID; ++siteID) {
+        if (strcmp(sites[siteID].type, siteType) == 0) {
+            if (available(sites[siteID]) == 0) {
+                return siteID - player->siteNumber;
+            }
+        }
+    }
+    return -1;
+}
+
+/** Returns a sum of all the player's cards. **/
+int sum_cards(Player *player) {
+    int *playerCards = player->cards;
+    int total = 0;
+
+    total += playerCards[A];
+    total += playerCards[B];
+    total += playerCards[C];
+    total += playerCards[D];
+    total += playerCards[E];
+
+    return total;
+}
+
+/** Returns 0 if the given player has the most cards of all players. **/
+int check_if_most_cards(Path *path, Player *player) {
+    for (int playerID = 0; playerID < path->playersInGame; ++playerID) {
+        if (sum_cards(path->players[playerID]) >= sum_cards(player)) {
+            if (playerID != player->ID) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+/** Returns 0 if everyone has zero cards. **/
+int check_empty_cards(Path *path) {
+    Player **players = path->players;
+    for (int playerID = 0; playerID < path->playersInGame; ++playerID) {
+        if (sum_cards(players[playerID]) != 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/** Finds the earliest site which is available. **/
+int find_earliest(Path *path, int currentSiteID){
+    for (int siteID = currentSiteID + 1; siteID < path->size; ++siteID) {
+        if (path->sites[siteID].numPlayersCurrently <
+                path->sites[siteID].playerLimit) {
+            return siteID;
+        }
+    }
+}
+
+/** Returns the number of steps player B should make. **/
+int player_B_next_move(Path *path, int playerID) {
+    Player *player = path->players[playerID];
+    Site *sites = path->sites;
+    int nextBarrierID = find_next_barrier(path, player->siteNumber);
+
+    Site nextSite = sites[player->siteNumber + 1];
+
+    // if the next site is not full
+    if (available(nextSite) == 0) {
+        // if all other players are on later sites than us
+        if (check_if_last_player(path, player) == 0) {
+            return 1;
+        }
+    }
+
+    // if we have an odd amount of money
+    if (player->money % 2 == 1) {
+        // if there is a Mo between us and the next barrier
+        int steps = check_before_barrier(path, player, Mo);
+        if (steps != -1 && !available(path->sites[player->siteNumber + steps])) {
+            return steps;
+        }
+    }
+
+    // if we have the most cards or if everyone has zero cards
+    if (!check_if_most_cards(path, player) || !check_empty_cards(path)) {
+        // if there is a Ri between us and the next barrier
+        int steps = check_before_barrier(path, player, Ri);
+        if (steps != -1) {
+            return steps;
+        }
+    }
+
+    // if there is a V2 between us and the next barrier, go there
+
+    int steps = check_before_barrier(path, player, V2);
+    if (steps != -1) {
+        if (available(path->sites[player->siteNumber + steps]) == 0){
+            return steps;
+        }
+
+    }
+
+    return find_earliest(path, player->siteNumber) - player->siteNumber;
+}
+
+/** Calculates the number of sets of cards the player has.
+ * Removes cards from the player which have been counted. **/
+int calculate_sets(Player *player, int setSize) {
+    int *cards = player->cards;
+    int lowestDenom = INT_MAX;
+
+    int seenSets = 0;
+    // find how many sets
+    for (int suit = A; suit <= E; ++suit) {
+        if (cards[suit] == 0) {
+            seenSets += 1;
+        }
+        if (cards[suit] < lowestDenom && cards[suit] != 0) {
+            lowestDenom = cards[suit];
+        }
+    }
+
+    if (seenSets != (NUM_CARDS - setSize)) {
+        return 0;
+    }
+
+
+    // remove counted cards
+    for (int suit = A; suit <= E; ++suit) {
+        if (cards[suit] != 0) {
+            cards[suit] -= lowestDenom;
+        }
+    }
+
+    return lowestDenom;
+}
+
+
+/** Calculates a player's total store from items and those derived from other
+ *  ways. **/
+int calculate_total_score(Player *player) {
+    int totalScore = player->points;
+
+    // calculate sets of 5
+    totalScore += calculate_sets(player, 5) * 10;
+
+    // calculate sets of 4
+    totalScore += calculate_sets(player, 4) * 7;
+
+    // calculate sets of 3
+    totalScore += calculate_sets(player, 3) * 5;
+
+    // calculate sets of 2
+    totalScore += calculate_sets(player, 2) * 3;
+
+    // calculate sets of 1
+    totalScore += calculate_sets(player, 1);
+
+    // V1
+    totalScore += player->countV1;
+    // V2
+    totalScore += player->countV2;
+
+    return totalScore;
+}
+
+/** Returns 0 if a site is available to move to. **/
+int available(Site site){
+
+    if (site.numPlayersCurrently < site.playerLimit) {
+        return 0;
+    }
+    return 1;
+}
+
+/** Returns the number of steps player A should make. **/
+int player_A_next_move(Path *path, int playerID) {
+    Player *player = path->players[playerID];
+    Site *sites = path->sites;
+    int nextBarrierID = find_next_barrier(path, player->siteNumber);
+    // if player has money and there is Do in front, go there
+    if (player->money > 0) {
+        int steps = check_before_barrier(path, player, Do);
+        if (steps != -1) {
+            return steps;
+        } //todo fix
+    }
+
+    // if the next site is Mo and there is room, go there
+    Site nextSite = sites[player->siteNumber + 1];
+    if (strcmp(nextSite.type, Mo) == 0) {
+        if (nextSite.numPlayersCurrently  < nextSite.playerLimit) {
+            // return 1 because next site is one space ahead
+            return 1;
+        }
+    }
+
+    // pick the closest V1, V2 or Barrier and go there
+    for (int siteID = player->siteNumber + 1; siteID <= nextBarrierID; ++siteID) {
+        if (available(sites[siteID]) == 0) {
+            if (strcmp(sites[siteID].type, V1) == 0) {
+                return siteID - player->siteNumber;
+            }
+            if (strcmp(sites[siteID].type, V2) == 0) {
+                return siteID - player->siteNumber;
+            }
+            if (strcmp(sites[siteID].type, Barrier) == 0) {
+                return siteID - player->siteNumber;
+            }
+        }
+
+    }
+}
+
+/** Handles human user input
+ *
+ * @param grid The game board
+ * @return String of characters inputted by user
+ * @exit code 5 if EOF encountered
+ */
+char *handle_user_input() {
+    printf("Steps: ");
+    char *result = malloc(sizeof(char) * 1);
+    int position = 0;
+    int next = 0;
+    int length = 0;
+
+    while (true) {
+        next = fgetc(stdin);
+        if (next == EOF) {
+            fprintf(stderr, "End of file\n");
+//            exit(END_OF_FILE);
+        } else if (next == '\n') {
+            result[position] = '\0';
+            break;
+        } else {
+            length += 1;
+            result = realloc(result, (length + 1) * sizeof(char));
+            result[position++] = (char) next;
+        }
+    }
+
+    return result;
+}
+
+// returns int of whatever they inputted
+int get_input() {
+    int row;
+
+    while (true) {
+        char *result = handle_user_input();
+
+        // for save game
+        if (result[0] == 's' && strlen(result) != 1) {
+            char filename[80];
+            sscanf(result + 1, "%s", filename);
+//            save_game(grid, filename, grid->currentPlayer);
+        } else if (sscanf(result, "%d", &row) == 1) {
+            break;
+        }
+    }
+    return row;
+//    if (!place_move(grid, row, column, grid->currentPlayer)) {
+//        grid->currentPlayer = next_player(grid->currentPlayer);
+//        draw_grid(grid, stdout);
+//    }
+}
+
+
+// TODO player ID could be 2 digits.
+/** Displays the path to stdout **/
+void print_path(Path *path, FILE *location) {
+    Player **players = path->players;
+    int numLines = 0;
+    // for each site
+    for (int sitenum = 0; sitenum < path->size; ++sitenum) {
+        Site site = path->sites[sitenum];
+        fprintf(location,"%s ", site.type);
+        fflush(location);
+
+        // find out how many lines we need to display
+        if (site.numPlayersCurrently > numLines) {
+            numLines = site.numPlayersCurrently;
+        }
+    }
+
+    char **lines = make_empty_strings(numLines, path->size);
+
+    // printing player positions below the path
+    for (int siteNumber = 0; siteNumber < path->size; ++siteNumber) {
+        Site site = path->sites[siteNumber];
+
+        int printed = 0;
+
+        int lastPrintedPos = 0;
+        int playerWithLowest = -1;
+
+        // need to loop through each player to find lowest position and print
+        while (printed < site.numPlayersCurrently) {
+            int lowestPosition = 9999;
+
+            // find positioning
+            for (int player = 0; player < path->playersInGame; ++player) {
+                if (players[player]->siteNumber == siteNumber) {
+                    if (players[player]->position < lowestPosition &&
+                            players[player]->position > lastPrintedPos) {
+                        lowestPosition = players[player]->position;
+                        playerWithLowest = player;
+                    }
+                }
+            }
+
+            for (int j = 0; j < numLines; ++j) {
+
+                // if the space hasn't been printed to
+                if (lines[j][3 * siteNumber] == ' ') {
+                    lines[j][3 * siteNumber] = playerWithLowest + '0';
+                    printed += 1;
+                    lastPrintedPos = lowestPosition;
+                    break;
+                }
+
+            }
+        }
+
+
+    }
+
+    // display lines
+    for (int line = 0; line < numLines; ++line) {
+        fprintf(location,"\n%s", lines[line]);
+    }
+    fprintf(location,"\n");
+    fflush(stdout); // temp
+}
+
+
+/** Initialises and returns a player **/
+Player *init_player(Path *path, int ID) {
+    Player *player = malloc(sizeof(Player));
+    player->ID = ID;
+    player->money = 7;
+    player->countV1 = 0;
+    player->countV2 = 0;
+    player->siteNumber = 0;
+    player->points = 0;
+
+    // init cards - there are 5 cards to a hand
+    int *cards = malloc(sizeof(int) * NUM_CARDS);
+    memset(cards, 0, sizeof(int) * 5);
+    player->cards = cards;
+
+    path->sites[0].numPlayersCurrently += 1;
+
+    // dynamically increase playerIDs array for each new player
+    for (int siteNum = 0; siteNum < path->size; ++siteNum) {
+        if (path->playersInGame == 0) {
+            path->sites[siteNum].playerIDs = malloc(sizeof(int));
+        } else {
+            path->sites[siteNum].playerIDs = realloc(path->sites[siteNum].playerIDs,
+                                                     sizeof(int) * path->playersInGame + 1);
+        }
+    }
+
+    path->playersInGame += 1;
+
+    // ensure the player only exists at one site
+    for (int siteNum = 0; siteNum < path->size; ++siteNum) {
+        path->sites[siteNum].playerIDs[ID] = 0;
+    }
+
+    path->sites[0].playerIDs[ID] = 1;
+
+    player->position = path->sites[0].numPlayersCurrently;
+
+    return player;
+}
+
+/** Arranges the order of players initially in order of smallest player
+ *  furthest from the path. **/
+void arrange_order_of_players(Path *path) {
+    Player **players = path->players;
+//    int *playerIDs = path->sites[0].playerIDs;
+    int countPlayers = path->sites[0].numPlayersCurrently;
+
+    for (int player = 0; player < countPlayers; ++player) {
+        players[player]->position = -1 * (player - countPlayers);
+//        printf("%d\n", players[player]->position);
+    }
+
+}
+
+/** Returns the ID of the player who has the highest score in the current
+ * site.
+ */
+int get_highest_score(Path *path, int sideNum) {
+    int highestScore = 0;
+    int playerIdwithHS = -1;
+
+    for (int i = 0; i < path->playersInGame; ++i) {
+        // if the player is at the site
+        if (path->players[i]->siteNumber == sideNum) {
+            if (path->players[i]->position > highestScore) {
+                highestScore = path->players[i]->position;
+                playerIdwithHS = i;
+            }
+        }
+    }
+
+    return playerIdwithHS;
+}
+
+/** Returns the ID of the next player to make a move. **/
+int next_player_to_move(Path *path) {
+    Site *sites = path->sites;
+
+    for (int i = 0; i < path->size; ++i) {
+        if (sites[i].numPlayersCurrently != 0) {
+            return get_highest_score(path, i);
+        }
+    }
+
+}
+
+int do_ri(Deck *deck, Player *player) {
+//    Cards cards;
+    Card *card = next_card(deck);
+    int *playerCards = player->cards;
+
+    if (card->value == 'A') {
+        playerCards[A] += 1;
+        return 1;
+    }
+    if (card->value == 'B') {
+        playerCards[B] += 1;
+        return 2;
+    }
+    if (card->value == 'C') {
+        playerCards[C] += 1;
+        return 3;
+    }
+    if (card->value == 'D') {
+        playerCards[D] += 1;
+        return 4;
+    }
+    if (card->value == 'E') {
+        playerCards[E] += 1;
+        return 5;
+    }
+    return 0;
+}
+
+/** Performs action for player.
+ *  Returns 0 on success.
+ **/
+int do_action(Path *path, int playerID){
+    Player *player = path->players[playerID];
+    Site *site =&(path->sites[player->siteNumber]);
+
+    // do Mo type
+    if (strcmp(site->type, Mo) == 0) {
+        player->money += 3;
+        return 0;
+    }
+    // do V1 type
+    if (strcmp(site->type, V1) == 0) {
+        player->countV1 += 1;
+        return 0;
+    }
+    // do V2 type
+    if (strcmp(site->type, V2) == 0) {
+        player->countV2 += 1;
+        return 0;
+    }
+    // do Do type
+    if (strcmp(site->type, Do) == 0) {
+        // converts every 2 money to 1 point
+        player->points += player->money / 2;
+        player->money = 0;
+        return 0;
+    }
+    // do Ri type
+    if (strcmp(site->type, Ri) == 0) {
+//        do_ri(path->deck, player);
+        return 0;
+    }
+    // barrier site, do nothing
+    if (strcmp(site->type, Barrier) == 0) {
+        // do nothing
+        return 0;
+    }
+    return 0;
+
+
+}
+
+/** Moves the given player forward the given number of steps. **/
+void move_player(Path *path, int playerID, int steps, ProcessType processType) {
+    //TODO check if you can move here
+    Player *player = path->players[playerID];
+    Site *site = &(path->sites[player->siteNumber]);
+    // remove from old site
+    site->numPlayersCurrently -= 1;
+    site->playerIDs[player->ID] = 0;
+    player->siteNumber += steps;
+
+    site = &(path->sites[player->siteNumber]);
+    // move to new site
+    site->numPlayersCurrently += 1;
+    site->playerIDs[player->ID] = 1;
+
+    player->position = site->numPlayersCurrently;
+
+    // do action
+    if (processType == DEALER) {
+        do_action(path, playerID);
+    }
+}
+
+
+
+
+

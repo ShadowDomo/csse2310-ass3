@@ -1,0 +1,15 @@
+#include "2310A.h"
+
+
+
+int main(int argc, char **argv) {
+
+    // TODO temp argv. Put into separate func
+    FILE *loadedFile = fopen(argv[1], "r");
+
+    Path path;
+    alloc_path(&path, loadedFile, argv);
+
+    print_path(&path);
+
+}

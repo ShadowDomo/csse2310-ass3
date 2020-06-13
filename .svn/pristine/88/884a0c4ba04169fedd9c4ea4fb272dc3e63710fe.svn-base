@@ -1,0 +1,11 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/push2310.dir/2310A.c.o"
+  "CMakeFiles/push2310.dir/push2310.c.o"
+  "push2310"
+  "push2310.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C)
+  include(CMakeFiles/push2310.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

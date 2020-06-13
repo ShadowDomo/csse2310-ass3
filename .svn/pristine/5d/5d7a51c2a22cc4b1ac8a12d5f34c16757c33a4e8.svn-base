@@ -1,0 +1,42 @@
+#include "2310A.h"
+
+
+
+int main(int argc, char **argv) {
+
+    // TODO temp argv. Put into separate func
+    FILE *loadedFile = fopen(argv[1], "r");
+
+    Path *path = allocate_path(loadedFile, 2);
+
+    print_path(path);
+    printf("\n\n\n");
+
+    Deck *deck = allocate_deck(fopen(argv[2], "r"));
+
+    printf("%c\n",next_card(deck)->value);
+
+    printf("%c\n",next_card(deck)->value);
+    printf("%c\n",next_card(deck)->value);
+    printf("%c\n",next_card(deck)->value);
+    printf("%c\n",next_card(deck)->value);
+    printf("%c\n",next_card(deck)->value);
+//    printf("%c\n",next_card(&deck)->value);
+//    printf("%c\n",next_card(&deck)->value);
+//    printf("%c\n",next_card(&deck)->value);
+//    printf("%c\n",next_card(&deck)->value);
+//    printf("%c\n",next_card(&deck)->value);
+//    printf("%c\n",next_card(&deck)->value);
+//    printf("%c\n",next_card(&deck)->value);
+
+
+    Player playerA;
+    Player playerB;
+
+    init_player(&playerA, 0);
+    init_player(&playerB, 1);
+
+    move_player(&playerA, 5);
+
+
+}

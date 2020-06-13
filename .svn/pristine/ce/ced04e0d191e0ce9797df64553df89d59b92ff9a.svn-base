@@ -1,0 +1,40 @@
+#include "2310A.h"
+
+
+/** Player A program. **/
+int main(int argc, char **argv) {
+
+//    for (int i = 0; i < argc; ++i) {
+//        fprintf(stderr, "%s ", argv[i]);
+//    }
+//    fprintf(stderr, "\n%d ", getpid());
+
+
+    // suppose correct
+    int numPlayers;
+    int playerID;
+    sscanf(argv[1], "%d", &numPlayers);
+    sscanf(argv[2], "%d", &playerID);
+
+    printf("^");
+//    fprintf(stderr, "hi");
+//    fflush(stderr);
+    fflush(stdout);
+
+    char *givenPath = read_line(stdin);
+
+
+
+
+
+    Path *path = allocate_path(givenPath, numPlayers);
+    path->players = malloc(sizeof(Player*) * numPlayers );
+
+    for (int i = 0; i < numPlayers; ++i) {
+        path->players[i] = init_player(path, i);
+    }
+    arrange_order_of_players(path);
+
+    start_player(numPlayers, playerID, path, 'B');
+
+}

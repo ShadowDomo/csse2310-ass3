@@ -1,0 +1,36 @@
+#ifndef PATH_H
+#define PATH_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "util.h"
+//#include "player.h"
+
+
+
+/** A single site.
+ */
+typedef struct Site {
+    char *type;
+    int playerLimit;
+
+    // array of playerIDs.
+    int *playerIDs;
+    int numPlayersCurrently;
+} Site;
+
+/** Represents the game path.
+ */
+typedef struct Path {
+    int size;
+    int playersInGame;
+    Site *sites;
+} Path;
+
+void print_path(Path *path);
+
+Path *allocate_path(FILE *file, int numPlayers);
+
+#endif

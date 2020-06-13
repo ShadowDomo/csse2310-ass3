@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="2310A" targetName="2310A" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="true">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="56527741-9550-4579-b984-15f557440664" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ProjectId" id="1bQ9JulHyAKGxbJH8VyckR4WLFP" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="OCFindUsagesOptions.isSearchForTextOccurrences" value="false" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="2310A" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="../test.path 9 9 " REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="2310A" TARGET_NAME="2310A" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="2310A" RUN_TARGET_NAME="2310A">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>$USER_HOME$/.subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="56527741-9550-4579-b984-15f557440664" name="Default Changelist" comment="" />
+      <created>1588553381876</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1588553381876</updated>
+      <workItem from="1588553383564" duration="17228000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1" />
+    <option name="LAST_COMMIT_MESSAGE" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1606" y="134" key="#Plugins" timestamp="1588553803477">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1606" y="134" key="#Plugins/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588553803477" />
+    <state x="1470" y="148" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588558988627">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1470" y="148" key="#com.intellij.execution.impl.EditConfigurationsDialog/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588558988627" />
+    <state x="1748" y="292" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1588558665933">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1748" y="292" key="#com.intellij.fileTypes.FileTypeChooser/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588558665933" />
+    <state x="2016" y="425" key="#xdebugger.evaluate" timestamp="1588564514518">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="2016" y="425" key="#xdebugger.evaluate/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588564514518" />
+    <state x="1767" y="358" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588568673637">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1767" y="358" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588568673637" />
+    <state x="1807" y="189" key="FileChooserDialogImpl" timestamp="1588575161559">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="471" y="538" key="FileChooserDialogImpl/1366.0.1280.1024/0.396.1366.768@0.396.1366.768" timestamp="1588553417782" />
+    <state x="1807" y="189" key="FileChooserDialogImpl/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588575161559" />
+    <state width="1234" height="227" key="GridCell.Tab.0.bottom" timestamp="1588574566989">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="227" key="GridCell.Tab.0.bottom/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588574566989" />
+    <state width="1234" height="227" key="GridCell.Tab.0.center" timestamp="1588574566989">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="227" key="GridCell.Tab.0.center/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588574566989" />
+    <state width="1234" height="227" key="GridCell.Tab.0.left" timestamp="1588574566989">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="227" key="GridCell.Tab.0.left/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588574566989" />
+    <state width="1234" height="227" key="GridCell.Tab.0.right" timestamp="1588574566989">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="227" key="GridCell.Tab.0.right/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588574566989" />
+    <state width="1234" height="314" key="GridCell.Tab.1.bottom" timestamp="1588564514867">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="314" key="GridCell.Tab.1.bottom/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588564514867" />
+    <state width="1234" height="314" key="GridCell.Tab.1.center" timestamp="1588564514867">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="314" key="GridCell.Tab.1.center/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588564514867" />
+    <state width="1234" height="314" key="GridCell.Tab.1.left" timestamp="1588564514867">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="314" key="GridCell.Tab.1.left/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588564514867" />
+    <state width="1234" height="314" key="GridCell.Tab.1.right" timestamp="1588564514867">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state width="1234" height="314" key="GridCell.Tab.1.right/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588564514867" />
+    <state x="1507" y="125" key="SettingsEditor" timestamp="1588574932209">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1507" y="125" key="SettingsEditor/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588574932209" />
+    <state x="1625" y="129" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1588558681965">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1625" y="129" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588558681965" />
+    <state x="1669" y="213" width="672" height="678" key="search.everywhere.popup" timestamp="1588569649004">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1669" y="213" width="672" height="678" key="search.everywhere.popup/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588569649004" />
+    <state x="1844" y="284" key="svn.repositoryBrowser" timestamp="1588574544397">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1844" y="284" key="svn.repositoryBrowser/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588574544397" />
+    <state x="1829" y="389" key="svn.upgradeDialog" timestamp="1588575163635">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1829" y="389" key="svn.upgradeDialog/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588575163635" />
+    <state x="1745" y="355" key="svn4idea.checkout.options" timestamp="1588575162502">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1745" y="355" key="svn4idea.checkout.options/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588575162502" />
+    <state x="1744" y="263" key="svn4idea.import.options" timestamp="1588574537446">
+      <screen x="1366" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1744" y="263" key="svn4idea.import.options/1366.0.1280.1024/0.396.1366.768@1366.0.1280.1024" timestamp="1588574537446" />
+  </component>
+</project>

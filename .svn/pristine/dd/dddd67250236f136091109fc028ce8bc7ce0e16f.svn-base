@@ -1,0 +1,62 @@
+#include "2310A.h"
+
+
+
+int main(int argc, char **argv) {
+
+    // TODO temp argv. Put into separate func
+    FILE *loadedFile = fopen(argv[1], "r");
+
+    Path *path = allocate_path(loadedFile);
+
+    Deck *deck = allocate_deck(fopen(argv[2], "r"));
+
+//    printf("%c\n",next_card(deck)->value);
+//
+//    printf("%c\n",next_card(deck)->value);
+//    printf("%c\n",next_card(deck)->value);
+//    printf("%c\n",next_card(deck)->value);
+//    printf("%c\n",next_card(deck)->value);
+//    printf("%c\n",next_card(deck)->value);
+    int numPlayers = 4;
+
+//    Player *playerA = init_player(path, 0);
+//    Player *playerB = init_player(path, 1);
+//    Player *playerC = init_player(path, 2);
+//    Player *playerD = init_player(path, 3);
+
+    // index is the player id
+     path->players = malloc(sizeof(Player*) * numPlayers );
+
+    for (int i = 0; i < numPlayers; ++i) {
+        path->players[i] = init_player(path, i);
+    }
+
+    // arrange in order
+    arrange_order_of_players(path);
+
+//    printf("\n\n\n");
+
+//    move_player(path, players[0], 2);
+//    move_player(path,  1, 4);
+//    move_player(path,  2, 2);
+//    move_player(path, 3, 2);
+
+//     sort players by their IDs in ascending order
+    qsort(path->players, numPlayers, sizeof(Player), sorter_func);
+
+//    printf("hi\n");
+
+    print_path(path);
+    next_player_to_move(path);
+
+    while (true) {
+        printf("\nplayer %d's turn\n", next_player_to_move(path));
+        move_player(path, next_player_to_move(path), get_input());
+        print_path(path);
+    }
+
+//    move_player(playerA, 5);
+//    move_player(&playerA, 5);
+
+}

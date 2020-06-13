@@ -1,0 +1,30 @@
+#ifndef DECK_H
+#define DECK_H
+
+#include <stdlib.h>
+#include <stdio.h>
+#include "util.h"
+
+
+
+typedef struct Card Card;
+
+/** Representation of a Card. **/
+struct Card {
+    char value;
+    Card *nextCard;
+};
+
+/** Representation of a Deck. **/
+typedef struct Deck {
+    int count;
+    Card *topCard;
+    Card *lastCard;
+} Deck;
+
+
+Card *next_card(Deck *deck);
+void add_card(Deck *deck, Card *card);
+
+Deck *allocate_deck(FILE *file);
+#endif

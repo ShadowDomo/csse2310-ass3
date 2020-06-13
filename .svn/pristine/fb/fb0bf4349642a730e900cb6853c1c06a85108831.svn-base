@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/dom/Desktop/ass3/push2310.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+stdbool.h
+-
+push2310.h
+/home/dom/Desktop/ass3/push2310.h
+
+/home/dom/Desktop/ass3/push2310.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+stdbool.h
+-
+
